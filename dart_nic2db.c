@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     strftime(utc_start_str, sizeof(utc_start_str), "%Y-%m-%d-%H:%M:%S", t);
     
     char utc_start_full[64];
-    snprintf(utc_start_full, sizeof(utc_start_full), "%s.%06ld", utc_start_str, tv.tv_usec);
+    snprintf(utc_start_full, sizeof(utc_start_full), "%s.%06ld", utc_start_str, (long)tv.tv_usec);
 
     double mjd_start = 40587.0 + (tv.tv_sec / 86400.0) + (tv.tv_usec / 86400000000.0);
     uint64_t picoseconds = (uint64_t)tv.tv_usec * 1000000ULL;
@@ -131,6 +131,9 @@ int main(int argc, char **argv)
         expected_ndat = total_expected_heaps * 2048;
         expected_file_size = total_target_bytes + header_size;
     }
+    
+    // Calculate the absolute byte rate for the entire observation
+    uint64_t bytes_per_second = (uint64_t)config.num_channels * CHANNEL_BYTE_RATE; 
     
     memset(header_buf, 0, header_size);
     // Inject the dynamically parsed config fields directly into the DADA ASCII format
@@ -160,11 +163,12 @@ int main(int argc, char **argv)
         "OBS_OFFSET   %" PRIu64 "\n"
         "NDAT         %" PRIu64 "\n"
         "FILE_SIZE    %" PRIu64 "\n"
+        "BYTES_PER_SECOND %" PRIu64 "\n"
         "END\n",
         header_size, config.bw, config.freq, config.source, config.ra, 
         config.dec, config.mode, config.num_channels, utc_start_full, 
         mjd_start, picoseconds, config.tsamp, resolution, config.obs_offset, 
-        expected_ndat, expected_file_size);
+        expected_ndat, expected_file_size, bytes_per_second);
 
     ipcbuf_mark_filled(hdu->header_block, header_size);
     // ---------------------------------------------------------

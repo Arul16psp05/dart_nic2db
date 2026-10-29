@@ -3,7 +3,7 @@ CFLAGS = -O3 -Wall -Wextra -pthread
 # Adjust these paths if your PSRDADA installation is in a custom directory
 INCLUDES = -I/usr/local/include
 LDFLAGS = -L/usr/local/lib
-LIBS = -lpsrdada -lm
+LIBS = -lpsrdada -lnuma -lm
 
 TARGET = dart_nic2db
 SRC = dart_nic2db.c

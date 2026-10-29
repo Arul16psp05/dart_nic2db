@@ -43,12 +43,24 @@ int main(int argc, char **argv)
 
     if (config.udp_port == 0) return EXIT_FAILURE;
 
-    // Apply CPU Core Pinning natively
+    // Apply CPU Core Pinning and Explicit NUMA Binding natively
     if (config.cpu_core >= 0) {
+        // 1. Pin the thread to the selected core
         cpu_set_t cpuset;
         CPU_ZERO(&cpuset);
         CPU_SET(config.cpu_core, &cpuset);
         sched_setaffinity(0, sizeof(cpu_set_t), &cpuset);
+        
+        // 2. Enforce explicit NUMA memory policy for the selected core
+        if (numa_available() >= 0) {
+            int numa_node = numa_node_of_cpu(config.cpu_core);
+            if (numa_node >= 0) {
+                struct bitmask *nodemask = numa_allocate_nodemask();
+                numa_bitmask_setbit(nodemask, numa_node);
+                numa_bind(nodemask); 
+                numa_free_nodemask(nodemask);
+            }
+        }
     }
 
     uint64_t time_slice_size = (uint64_t)config.num_channels * SPEAD_PAYLOAD_SIZE;

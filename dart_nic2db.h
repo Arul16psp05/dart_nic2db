@@ -3,6 +3,7 @@
 
 #define _GNU_SOURCE 
 #include <sched.h>
+#include <numa.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

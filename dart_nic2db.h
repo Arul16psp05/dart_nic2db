@@ -32,7 +32,8 @@
 #define DEFAULT_NUM_CHANNELS 96
 #define DEFAULT_CPU_CORE -1
 #define DEFAULT_OBS_TIME 0
-#define CHANNEL_BYTE_RATE 3125000ULL 
+#define CHANNEL_BYTE_RATE 3703703ULL
+//#define CHANNEL_BYTE_RATE 3125000ULL 
 
 // Configuration Structure
 typedef struct {

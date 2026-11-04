@@ -13,7 +13,7 @@ dada_db -k dada -b 104857600 -n 16
 dada_dbdisk -k dada -D /mnt/my-nvme512/dart_nic_data
 
 ## Terminal 2
-./dart_nic2db -k dada -i 10.0.10.40 -p 4660 -b 128 -c 4 -f dart_observation_TPM.config -t 15
+./dart_nic2db -k dada -i 10.0.10.40 -p 4660 -b 128 -c 4 -f dart_observation_TPM_100MHz.config -t 15
 
 # Release the buffer
 dada_db -d -k dada
